@@ -58,6 +58,32 @@ namespace DevTasker.Domain.ServiceLayer
             return task;
         }
 
+        public async Task<TaskItem> UpdateTask(int taskId, string title, string? description,
+            TaskItemStatus status, TaskItemPriority priority, DateTime? dueDate, DateTime? CompletedAt)
+        {
+            var taskItemNew = new TaskItem
+            {
+                Title       = title,
+                Description = description,
+                Status      = status,
+                Priority    = priority,
+                DueDate     = dueDate,
+                CompletedAt = CompletedAt
+            };
+
+            var task = await _taskItemRepository.UpdateTaskAsync(taskId, taskItemNew);
+
+            if (task == null)
+            {
+                _logger.LogWarning("Task {taskId} not found when trying to update", taskId);
+                throw new NotFoundException($"Task {taskId} not found.");
+            }
+
+            _logger.LogInformation("Updated task {taskId}", task.Id);
+
+            return task;
+        }
+
         public async Task<TaskItem> UpdateTaskStatus(int taskId, TaskItemStatus newStatus)
         {
             var task = await _taskItemRepository.UpdateTaskStatusAsync(taskId, newStatus);

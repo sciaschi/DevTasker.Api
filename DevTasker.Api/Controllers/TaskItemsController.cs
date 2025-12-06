@@ -1,7 +1,7 @@
 ﻿using DevTasker.Api.DTO;
 using DevTasker.Api.Mapping;
 using DevTasker.Domain.Classes;
-using DevTasker.Domain.Dto.TaskItem.Requests;
+using DevTasker.Api.Dto.TaskItem.Requests;
 using DevTasker.Domain.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,14 +20,26 @@ namespace DevTasker.Api.Controllers
 
         // POST: api/tasks/create
         [HttpPost("create")]
-        public async Task<ActionResult<TaskItemDto>> Create([FromBody] CreateTaskItemRequest request)
+        public async Task<ActionResult<TaskItemDto>> CreateTaskItem([FromBody] CreateTaskItemRequest request)
         {
-            var taskItem = await _service.CreateTask(request.ProjectId ?? null, request.Title, request.Description ?? null,
-                                                        request.Status, request.Priority, request.DueDate ?? null,
-                                                        request.CompletedAt ?? null);
+            var taskItem = await _service.CreateTask(request.ProjectId, request.Title, request.Description,
+                                                        request.Status, request.Priority, request.DueDate,
+                                                        request.CompletedAt);
 
 
             return CreatedAtAction(nameof(GetTaskById), new { taskId = taskItem.Id }, taskItem);
+        }
+
+        // POST: api/tasks/update
+        [HttpPut("update")]
+        public async Task<ActionResult<TaskItemDto>> UpdateTaskItem([FromBody] UpdateTaskItemRequest request)
+        {
+            var taskItem = await _service.UpdateTask(request.Id, request.Title, request.Description,
+                                                        request.Status, request.Priority, request.DueDate,
+                                                        request.CompletedAt);
+
+
+            return Ok(taskItem.ToDto());
         }
 
         // GET: api/tasks/project/{projectId}

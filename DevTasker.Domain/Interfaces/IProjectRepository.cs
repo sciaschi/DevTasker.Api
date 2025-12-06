@@ -8,6 +8,7 @@ namespace DevTasker.Domain.Interface
     public interface IProjectRepository
     {
         Task<Project> CreateProjectAsync(Project project);
+        Task<Project> UpdateProjectAsync(int projectId, string name, string? description);
         Task<Project?> GetProjectAsync(int id, bool withDetails = false);
         Task<IEnumerable<Project>> GetAllProjectsAsync(bool withDetails = false);
         Task<Project?> ArchiveProjectAsync(int id);

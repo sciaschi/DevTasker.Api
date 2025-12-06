@@ -33,6 +33,21 @@ namespace DevTasker.Infrastructure.Repository
                
         }
 
+        public async Task<Project> UpdateProjectAsync(int projectId, string name, string? description)
+        {
+            var existingProject =  await _db.Projects.SingleOrDefaultAsync(x => x.Id == projectId);
+            if (existingProject == null)
+                throw new NotFoundException($"Project {projectId} not found.");
+
+            existingProject.Name = name;
+            existingProject.Description = description;
+
+            _db.Projects.Update(existingProject);
+            await _db.SaveChangesAsync();
+
+            return existingProject;
+        }
+
         public async Task<Project> CreateProjectAsync(Project project)
         {
             await _db.Projects.AddAsync(project);

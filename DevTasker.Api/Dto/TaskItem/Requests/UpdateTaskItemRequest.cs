@@ -8,13 +8,12 @@ using System.Text.Json.Serialization;
 
 namespace DevTasker.Api.Dto.TaskItem.Requests
 {
-    public class CreateTaskItemRequest
+    public class UpdateTaskItemRequest
     {
-        [Required(ErrorMessage = "project_id is required.")]
-        [JsonPropertyName("project_id")]
-        public int ProjectId { get; set; }
+        [Required(ErrorMessage = "id is required.")]
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
 
-        [Required(ErrorMessage = "title is required.")]
         [JsonPropertyName("title")]
         public string Title { get; set; }
 

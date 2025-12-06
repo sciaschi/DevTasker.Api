@@ -5,7 +5,7 @@ services:
     container_name: devtasker-api
     build:
       context: .
-      dockerfile: DevTasker.Api/Dockerfile   # adjust path if needed
+      dockerfile: Dockerfile   # adjust path if needed
     ports:
       - "8080:8080"
     environment:

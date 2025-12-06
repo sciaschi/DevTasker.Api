@@ -1,5 +1,5 @@
 ﻿using DevTasker.Api.Mapping;
-using DevTasker.Domain.Dto.WorkLog.Requests;
+using DevTasker.Api.Dto.WorkLog.Requests;
 using DevTasker.Api.DTO;
 using DevTasker.Domain.Interface;
 using Microsoft.AspNetCore.Mvc;

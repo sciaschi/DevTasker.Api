@@ -14,6 +14,18 @@ namespace DevTasker.Infrastructure.Repository
             _db = db;
         }
 
+        public async Task<IEnumerable<TaskItem>> GetAllTasksForProjectAsync(int projectId, bool withDetails = false)
+        {
+            return withDetails ? await _db.TaskItems.Include(x => x.WorkLogs).Where(x => x.ProjectId == projectId).ToListAsync() :
+                await _db.TaskItems.Where(x => x.ProjectId == projectId).ToListAsync();
+        }
+
+        public async Task<TaskItem?> GetTaskByIdAsync(int taskId, bool withDetails = false)
+        {
+            return withDetails ? await _db.TaskItems.Include(x => x.WorkLogs).SingleOrDefaultAsync(x => x.Id == taskId) :
+                await _db.TaskItems.SingleOrDefaultAsync(x => x.Id == taskId);
+        }
+
         public async Task<TaskItem> CreateTaskAsync(TaskItem taskItem)
         {
             var project = await _db.Projects.SingleOrDefaultAsync(x => x.Id == taskItem.ProjectId);
@@ -31,16 +43,24 @@ namespace DevTasker.Infrastructure.Repository
             return taskItem;
         }
 
-        public async Task<IEnumerable<TaskItem>> GetAllTasksForProjectAsync(int projectId, bool withDetails = false)
+        public async Task<TaskItem> UpdateTaskAsync(int taskId, TaskItem taskItemNew)
         {
-            return withDetails ? await _db.TaskItems.Include(x => x.WorkLogs).Where(x => x.ProjectId == projectId).ToListAsync() :
-                await _db.TaskItems.Where(x => x.ProjectId == projectId).ToListAsync();
-        }
+            var taskItemOld = await _db.TaskItems.SingleOrDefaultAsync(x => x.Id == taskId);
 
-        public async Task<TaskItem?> GetTaskByIdAsync(int taskId, bool withDetails = false)
-        {
-            return withDetails ? await _db.TaskItems.Include(x => x.WorkLogs).SingleOrDefaultAsync(x => x.Id == taskId) :
-                await _db.TaskItems.SingleOrDefaultAsync(x => x.Id == taskId);
+            if (taskItemOld == null)
+                throw new NotFoundException($"Task {taskId} was not found.");
+
+            taskItemOld.Title       = taskItemNew.Title;
+            taskItemOld.Description = taskItemNew.Description;
+            taskItemOld.Status      = taskItemNew.Status;
+            taskItemOld.Priority    = taskItemNew.Priority;
+            taskItemOld.DueDate     = taskItemNew.DueDate;
+            taskItemOld.CompletedAt = taskItemNew.CompletedAt;
+
+            _db.TaskItems.Update(taskItemOld);
+            await _db.SaveChangesAsync();
+
+            return taskItemOld;
         }
 
         public async Task<TaskItem?> UpdateTaskStatusAsync(int taskId, TaskItemStatus newStatus)

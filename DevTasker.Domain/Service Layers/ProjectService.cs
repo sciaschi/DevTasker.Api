@@ -34,6 +34,17 @@ namespace DevTasker.Domain.ServiceLayer
             return res;
         }
 
+        public async Task<Project> UpdateProject(int projectId, string name, string? description)
+        {
+            if (string.IsNullOrWhiteSpace(name) || name.Length < 3)
+                throw new ValidationException("Name is required and must be at least 3 characters.");
+
+            var res = await _projectRepository.UpdateProjectAsync(projectId, name, description);
+
+            _logger.LogInformation("Update project {ProjectId}", res.Id);
+            return res;
+        }
+
         public async Task<IEnumerable<Project>> GetAllProjects(bool withDetails = false)
         {
             return await _projectRepository.GetAllProjectsAsync(withDetails);

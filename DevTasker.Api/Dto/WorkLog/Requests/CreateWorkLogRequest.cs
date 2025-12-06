@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace DevTasker.Domain.Dto.WorkLog.Requests
+namespace DevTasker.Api.Dto.WorkLog.Requests
 {
     public class CreateWorkLogRequest
     {

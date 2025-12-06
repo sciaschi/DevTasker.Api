@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace DevTasker.Domain.Dto.Project.Requests
+namespace DevTasker.Api.Dto.Project.Requests
 {
     public class CreateProjectRequest
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace DevTasker.Domain.Dto.TaskItem.Requests
+namespace DevTasker.Api.Dto.TaskItem.Requests
 {
     public class UpdateTaskStatusRequest
     {

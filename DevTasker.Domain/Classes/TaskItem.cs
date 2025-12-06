@@ -31,29 +31,22 @@ namespace DevTasker.Domain.Classes
         [JsonPropertyName("project_id")]
         public int? ProjectId { get; set; }
 
-        [Required(ErrorMessage = "title is required.")]
         [Column("Title")]
-        [JsonPropertyName("title")]
         public string Title { get; set; }
 
         [Column("description")]
-        [JsonPropertyName("description")]
         public string? Description { get; set; }
 
         [Column("status")]
-        [JsonPropertyName("status")]
         public TaskItemStatus Status { get; set; }
 
         [Column("priority")]
-        [JsonPropertyName("priority")]
         public TaskItemPriority Priority { get; set; }
 
         [Column("due_date")]
-        [JsonPropertyName("due_date")]
         public DateTime? DueDate { get; set; }
 
         [Column("completed_at")]
-        [JsonPropertyName("completed_at")]
         public DateTime? CompletedAt { get; set; }
 
         [Column("created_at")]

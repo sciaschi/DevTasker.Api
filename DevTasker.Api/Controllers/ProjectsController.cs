@@ -1,6 +1,6 @@
 ﻿using DevTasker.Api.Mapping;
 using DevTasker.Api.DTO;
-using DevTasker.Domain.Dto.Project.Requests;
+using DevTasker.Api.Dto.Project.Requests;
 using DevTasker.Domain.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,11 +58,20 @@ namespace DevTasker.Api.Controllers
 
         // POST: api/projects/create
         [HttpPost("create")]
-        public async Task<ActionResult<ProjectDto>> Create([FromBody] CreateProjectRequest request)
+        public async Task<ActionResult<ProjectDto>> CreateProject([FromBody] CreateProjectRequest request)
         {
             var project = await _service.CreateProject(request.Name, request.Description);
 
-            return CreatedAtAction(nameof(GetProjectById), new { id = project.Id }, project);
+            return CreatedAtAction(nameof(GetProjectById), new { id = project.Id }, project.ToDto());
+        }
+
+        // POST: api/projects/update
+        [HttpPut("update")]
+        public async Task<ActionResult<ProjectDto>> UpdateProject([FromBody] UpdateProjectRequest request)
+        {
+            var project = await _service.UpdateProject(request.ProjectId, request.Name, request.Description);
+
+            return CreatedAtAction(nameof(GetProjectById), new { id = project.Id }, project.ToDto());
         }
 
         // PUT: api/projects/{id:int}/archive
