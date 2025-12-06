@@ -15,9 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                      .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
-                         .AddEnvironmentVariables();
+                     .AddEnvironmentVariables();
+
 builder.Services.AddDbContext<DevTaskerDbContext>(options =>
-       options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionStrings__DefaultConnection")));
+       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 builder.Services.AddScoped<IWorkLogRepository, WorkLogRepository>();
