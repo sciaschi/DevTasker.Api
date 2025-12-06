@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="DevTasker.Api/DevTasker.Api.csproj" />
+  <Project Path="DevTasker.Domain/DevTasker.Domain.csproj" />
+  <Project Path="DevTasker.Infrastructure/DevTasker.Infrastructure.csproj" />
+  <Project Path="DevTasker.Test/DevTasker.Test.csproj" Id="fa0c43c3-d1f9-430e-badb-020818afab7a" />
+</Solution>
