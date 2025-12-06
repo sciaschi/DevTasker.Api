@@ -17,8 +17,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
                      .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
                      .AddEnvironmentVariables();
 
+var serverVersion = new MySqlServerVersion(new Version(8, 4, 7));
+
 builder.Services.AddDbContext<DevTaskerDbContext>(options =>
-       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+       options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), serverVersion));
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 builder.Services.AddScoped<IWorkLogRepository, WorkLogRepository>();
