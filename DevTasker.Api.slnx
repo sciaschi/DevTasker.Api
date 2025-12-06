@@ -1,7 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
-    <File Path=".env" />
+    <File Path=".env.example" />
   </Folder>
   <Project Path="DevTasker.Api/DevTasker.Api.csproj" />
   <Project Path="DevTasker.Domain/DevTasker.Domain.csproj" />

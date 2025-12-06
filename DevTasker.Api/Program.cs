@@ -17,10 +17,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
                      .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
                      .AddEnvironmentVariables();
 
-var serverVersion = new MySqlServerVersion(new Version(8, 4, 7));
+var serverVersion = new Version(8, 4, 7);
 
 builder.Services.AddDbContext<DevTaskerDbContext>(options =>
-       options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), serverVersion));
+       options.UseMySQL(builder.Configuration.GetConnectionString("MySQLConnection")));
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 builder.Services.AddScoped<IWorkLogRepository, WorkLogRepository>();
@@ -54,12 +54,21 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
+HttpMessageHandler? handler = null;
+
+#if DEBUG
+handler = new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+    {
+        Console.WriteLine($"[DEBUG] Splunk SSL errors: {errors}");
+        return true; // DEV ONLY: accept any cert
+    }
+};
+#endif
+
 
 var configuration = builder.Configuration;
-
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -68,7 +77,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.EventCollector(
         splunkHost: configuration["Splunk:Host"],
         eventCollectorToken: configuration["Splunk:Token"],
-        index: "devtrackerindex",
+        index: "testindex",
         uriPath: "services/collector/event")
     .CreateLogger();
 

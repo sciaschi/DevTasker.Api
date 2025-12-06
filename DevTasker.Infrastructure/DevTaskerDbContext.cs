@@ -28,12 +28,10 @@ namespace DevTasker.Infrastructure
 
             modelBuilder.Entity<Project>()
                 .Property(p => p.CreatedAt)
-                .HasDefaultValueSql("GETDATE()")
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<TaskItem>()
                 .Property(t => t.CreatedAt)
-                .HasDefaultValueSql("GETDATE()")
                 .ValueGeneratedOnAdd();
         }
     }
