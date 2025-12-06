@@ -1,0 +1,38 @@
+﻿services:
+  devtasker-api:
+    container_name: devtasker-api
+    build:
+      context: .              # <- solution root (includes all projects)
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - splunk
+    logging:
+      driver: splunk
+      options:
+        splunk-url: "https://splunk:8088"
+        splunk-token: "${SPLUNK_HEC_TOKEN}"
+        splunk-insecureskipverify: "true"
+        splunk-index: "main"
+        splunk-source: "DevTasker.Api"
+        splunk-sourcetype: "docker:aspnetcore"
+
+  splunk:
+    image: splunk/splunk:latest
+    container_name: splunk
+    environment:
+      SPLUNK_START_ARGS: "--accept-license"
+      SPLUNK_PASSWORD: "${SPLUNK_ADMIN_PASSWORD}"
+    ports:
+      - "8000:8000"
+      - "8088:8088"
+    volumes:
+      - splunk-etc:/opt/splunk/etc
+      - splunk-var:/opt/splunk/var
+
+volumes:
+  splunk-etc:
+  splunk-var:
