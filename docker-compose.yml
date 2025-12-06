@@ -13,7 +13,7 @@
     logging:
       driver: splunk
       options:
-        splunk-url: "https://splunk:8088"
+        splunk-url: "${SPLUNK_HOST}"
         splunk-token: "${SPLUNK_HEC_TOKEN}"
         splunk-insecureskipverify: "true"
         splunk-index: "main"
@@ -25,6 +25,7 @@
     container_name: splunk
     environment:
       SPLUNK_START_ARGS: "--accept-license"
+      SPLUNK_GENERAL_TERMS: "--accept-sgt-current-at-splunk-com"
       SPLUNK_PASSWORD: "${SPLUNK_ADMIN_PASSWORD}"
     ports:
       - "8000:8000"

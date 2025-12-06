@@ -13,8 +13,11 @@ using Serilog.Debugging;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                     .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
+                         .AddEnvironmentVariables();
 builder.Services.AddDbContext<DevTaskerDbContext>(options =>
-       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+       options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionStrings__DefaultConnection")));
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 builder.Services.AddScoped<IWorkLogRepository, WorkLogRepository>();
@@ -48,8 +51,12 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 var configuration = builder.Configuration;
+
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
