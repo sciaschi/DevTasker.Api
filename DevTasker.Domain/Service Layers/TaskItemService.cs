@@ -40,6 +40,11 @@ namespace DevTasker.Domain.ServiceLayer
             return await _taskItemRepository.CreateTaskAsync(task);
         }
 
+        public async Task<IEnumerable<TaskItem>> GetAllTasks(bool withDetails = false)
+        {
+            return await _taskItemRepository.GetAllTasksAsync(withDetails);
+        }
+
         public async Task<IEnumerable<TaskItem>> GetAllTasksForProject(int projectId, bool withDetails = false)
         {
             return await _taskItemRepository.GetAllTasksForProjectAsync(projectId, withDetails);

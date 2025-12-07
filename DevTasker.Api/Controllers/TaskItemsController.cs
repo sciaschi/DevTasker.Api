@@ -18,29 +18,26 @@ namespace DevTasker.Api.Controllers
             _service = service;
         }
 
-        // POST: api/tasks/create
-        [HttpPost("create")]
-        public async Task<ActionResult<TaskItemDto>> CreateTaskItem([FromBody] CreateTaskItemRequest request)
+        // GET: api/tasks/all
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<TaskItemDto>>> GetAllTasks()
         {
-            var taskItem = await _service.CreateTask(request.ProjectId, request.Title, request.Description,
-                                                        request.Status, request.Priority, request.DueDate,
-                                                        request.CompletedAt);
+            var res = await _service.GetAllTasks();
+            var taskItems = res.Select(val => val.ToDto());
 
-
-            return CreatedAtAction(nameof(GetTaskById), new { taskId = taskItem.Id }, taskItem);
+            return Ok(taskItems);
         }
 
-        // POST: api/tasks/update
-        [HttpPut("update")]
-        public async Task<ActionResult<TaskItemDto>> UpdateTaskItem([FromBody] UpdateTaskItemRequest request)
+        // GET: api/tasks/all
+        [HttpGet("all/details")]
+        public async Task<ActionResult<IEnumerable<TaskItemDto>>> GetAllTasksWithDetails()
         {
-            var taskItem = await _service.UpdateTask(request.Id, request.Title, request.Description,
-                                                        request.Status, request.Priority, request.DueDate,
-                                                        request.CompletedAt);
+            var res = await _service.GetAllTasks(true);
+            var taskItems = res.Select(val => val.ToDetailsDto());
 
-
-            return Ok(taskItem.ToDto());
+            return Ok(taskItems);
         }
+
 
         // GET: api/tasks/project/{projectId}
         [HttpGet("project/{projectId:int}")]
@@ -78,6 +75,30 @@ namespace DevTasker.Api.Controllers
             var taskItem = await _service.GetTaskById(taskId, true);
 
             return Ok(taskItem.ToDetailsDto());
+        }
+
+        // POST: api/tasks/create
+        [HttpPost("create")]
+        public async Task<ActionResult<TaskItemDto>> CreateTaskItem([FromBody] CreateTaskItemRequest request)
+        {
+            var taskItem = await _service.CreateTask(request.ProjectId, request.Title, request.Description,
+                                                        request.Status, request.Priority, request.DueDate,
+                                                        request.CompletedAt);
+
+
+            return CreatedAtAction(nameof(GetTaskById), new { taskId = taskItem.Id }, taskItem);
+        }
+
+        // POST: api/tasks/update
+        [HttpPut("update")]
+        public async Task<ActionResult<TaskItemDto>> UpdateTaskItem([FromBody] UpdateTaskItemRequest request)
+        {
+            var taskItem = await _service.UpdateTask(request.Id, request.Title, request.Description,
+                                                        request.Status, request.Priority, request.DueDate,
+                                                        request.CompletedAt);
+
+
+            return Ok(taskItem.ToDto());
         }
 
         // PATCH: api/tasks/{taskId}/status

@@ -11,6 +11,7 @@ namespace DevTasker.Domain.Interface
         Task<TaskItem> UpdateTaskAsync(int taskId, TaskItem taskItemNew);
         Task<TaskItem?> UpdateTaskStatusAsync(int taskId, TaskItemStatus newStatus);
         Task<IEnumerable<TaskItem>> GetAllTasksForProjectAsync(int projectId, bool withDetails = false);
+        Task<IEnumerable<TaskItem>> GetAllTasksAsync(bool withDetails = false);
         Task<TaskItem?> GetTaskByIdAsync(int taskId, bool withDetails = false);
     }
 }

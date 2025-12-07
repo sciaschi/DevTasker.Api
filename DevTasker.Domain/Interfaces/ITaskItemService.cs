@@ -12,6 +12,8 @@ namespace DevTasker.Domain.Interface
         Task<TaskItem> UpdateTask(int taskId, string title, string? description,
             TaskItemStatus status, TaskItemPriority priority, DateTime? dueDate, DateTime? CompletedAt);
         Task<IEnumerable<TaskItem>> GetAllTasksForProject(int projectId, bool withDetails = false);
+        Task<IEnumerable<TaskItem>> GetAllTasks(bool withDetails = false);
+        Task<IEnumerable<TaskItem>> GetAllTasksWithDetails(bool withDetails = false);
         Task<TaskItem> GetTaskById(int taskId, bool withDetails = false);
         Task<TaskItem> UpdateTaskStatus(int taskId, TaskItemStatus newStatus);
     }

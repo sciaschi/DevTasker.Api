@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
     `is_archived` TINYINT       DEFAULT ((0)) NOT NULL,
     `created_at`  TIMESTAMP 	DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`Id` ASC)
-) AUTO_INCREMENT = 1000;
+) AUTO_INCREMENT = 1001;
 
 CREATE TABLE IF NOT EXISTS `task_items` (
     `id`           INT           	AUTO_INCREMENT NOT NULL,

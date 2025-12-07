@@ -20,6 +20,11 @@ namespace DevTasker.Infrastructure.Repository
                 await _db.TaskItems.Where(x => x.ProjectId == projectId).ToListAsync();
         }
 
+        public async Task<IEnumerable<TaskItem>> GetAllTasksAsync(bool withDetails = false)
+        {
+            return withDetails ? await _db.TaskItems.Include(x => x.WorkLogs).ToListAsync() :await _db.TaskItems.ToListAsync();
+        }
+
         public async Task<TaskItem?> GetTaskByIdAsync(int taskId, bool withDetails = false)
         {
             return withDetails ? await _db.TaskItems.Include(x => x.WorkLogs).SingleOrDefaultAsync(x => x.Id == taskId) :

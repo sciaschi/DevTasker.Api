@@ -32,6 +32,7 @@ namespace DevTasker.Api.DTO
         [JsonPropertyName("is_archived")]
         public bool IsArchived { get; set; }
 
+        [JsonPropertyName("tasks")]
         public ICollection<TaskItemDetailsDto> TaskItems { get; set; } = new List<TaskItemDetailsDto>();
 
     }
