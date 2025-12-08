@@ -1,8 +1,10 @@
-﻿using DevTasker.Api.Mapping;
+﻿using DevTasker.Api.Dto.Project.Requests;
 using DevTasker.Api.DTO;
-using DevTasker.Api.Dto.Project.Requests;
+using DevTasker.Api.Hubs;
+using DevTasker.Api.Mapping;
 using DevTasker.Domain.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DevTasker.Api.Controllers
 {
@@ -12,10 +14,12 @@ namespace DevTasker.Api.Controllers
     public class ProjectsController : ControllerBase
     {
         private IProjectService _service;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public ProjectsController (IProjectService service)
+        public ProjectsController (IProjectService service, IHubContext<NotificationHub> hubContext)
         {
             _service = service;
+            _hubContext = hubContext;
         }
 
         // GET: api/projects/all
@@ -62,6 +66,8 @@ namespace DevTasker.Api.Controllers
         {
             var project = await _service.CreateProject(request.Name, request.Description);
 
+            await _hubContext.Clients.All.SendAsync("ProjectCreated", project.ToDto());
+
             return CreatedAtAction(nameof(GetProjectById), new { id = project.Id }, project.ToDto());
         }
 
@@ -70,6 +76,8 @@ namespace DevTasker.Api.Controllers
         public async Task<ActionResult<ProjectDto>> UpdateProject([FromBody] UpdateProjectRequest request)
         {
             var project = await _service.UpdateProject(request.ProjectId, request.Name, request.Description);
+
+            await _hubContext.Clients.All.SendAsync("ProjectUpdated", project.ToDto());
 
             return CreatedAtAction(nameof(GetProjectById), new { id = project.Id }, project.ToDto());
         }

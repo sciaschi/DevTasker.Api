@@ -4,6 +4,8 @@ using DevTasker.Domain.Classes;
 using DevTasker.Api.Dto.TaskItem.Requests;
 using DevTasker.Domain.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using DevTasker.Api.Hubs;
 
 namespace DevTasker.Api.Controllers
 {
@@ -12,10 +14,12 @@ namespace DevTasker.Api.Controllers
     public class TaskItemsController : ControllerBase
     {
         private ITaskItemService _service;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public TaskItemsController(ITaskItemService service)
+        public TaskItemsController(ITaskItemService service, IHubContext<NotificationHub> hubContext)
         {
             _service = service;
+            _hubContext = hubContext;
         }
 
         // GET: api/tasks/all
@@ -85,6 +89,7 @@ namespace DevTasker.Api.Controllers
                                                         request.Status, request.Priority, request.DueDate,
                                                         request.CompletedAt);
 
+            await _hubContext.Clients.All.SendAsync("TaskCreated", taskItem.ToDto());
 
             return CreatedAtAction(nameof(GetTaskById), new { taskId = taskItem.Id }, taskItem);
         }
@@ -97,8 +102,9 @@ namespace DevTasker.Api.Controllers
                                                         request.Status, request.Priority, request.DueDate,
                                                         request.CompletedAt);
 
+            await _hubContext.Clients.All.SendAsync("TaskUpdated", taskItem.ToDto());
 
-            return Ok(taskItem.ToDto());
+            return CreatedAtAction(nameof(GetTaskById), new { taskId = taskItem.Id }, taskItem.ToDto());
         }
 
         // PATCH: api/tasks/{taskId}/status

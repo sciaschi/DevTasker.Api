@@ -1,11 +1,12 @@
-﻿using DevTasker.Api.Middleware;
+﻿using DevTasker.Api.Hubs;
+using DevTasker.Api.Middleware;
 using DevTasker.Domain.Interface;
 using DevTasker.Domain.ServiceLayer;
 using DevTasker.Infrastructure;
 using DevTasker.Infrastructure.Repository;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Debugging;
@@ -27,8 +28,20 @@ builder.Services.AddScoped<IWorkLogRepository, WorkLogRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskItemService, TaskItemService>();
 builder.Services.AddScoped<IWorkLogService, WorkLogService>();
+builder.Services.AddSignalR();
 
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200", "http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -100,6 +113,10 @@ else
 {
     app.UseExceptionHandler("/error");
 }
+
+app.UseCors("AllowFrontend");
+
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
