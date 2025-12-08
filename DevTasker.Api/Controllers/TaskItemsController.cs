@@ -114,6 +114,8 @@ namespace DevTasker.Api.Controllers
             Enum.TryParse<TaskItemStatus>(request.Status.ToString(), out var taskStatus);
             var res = await _service.UpdateTaskStatus(taskId, taskStatus);
 
+            await _hubContext.Clients.All.SendAsync("TaskUpdated", res.ToDto());
+
             return Ok(res.ToDto());
         }
     }
