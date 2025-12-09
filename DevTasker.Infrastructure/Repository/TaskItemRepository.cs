@@ -97,5 +97,10 @@ namespace DevTasker.Infrastructure.Repository
 
             return taskItem;
         }
+
+        public async Task<bool> DeleteTaskAsync(int taskId)
+        {
+            return await _db.TaskItems.Where(x => x.Id == taskId).ExecuteDeleteAsync() > 0;
+        }
     }
 }

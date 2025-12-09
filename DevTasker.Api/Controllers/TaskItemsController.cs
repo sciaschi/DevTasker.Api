@@ -130,5 +130,16 @@ namespace DevTasker.Api.Controllers
 
             return Ok(res.ToDto());
         }
+
+        // DELETE: api/tasks/{taskId}/delete
+        [HttpDelete("{taskId:int}/delete")]
+        public async Task<ActionResult<bool>> DeleteTask(int taskId)
+        {
+            var res = await _service.DeleteTask(taskId);
+
+            await _hubContext.Clients.All.SendAsync("TaskDeleted", true);
+
+            return Ok(res);
+        }
     }
 }

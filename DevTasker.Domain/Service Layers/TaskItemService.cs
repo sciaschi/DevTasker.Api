@@ -118,5 +118,18 @@ namespace DevTasker.Domain.ServiceLayer
 
             return task;
         }
+
+        public async Task<bool> DeleteTask(int taskId)
+        {
+            var deleteTask = await _taskItemRepository.DeleteTaskAsync(taskId);
+
+            if (!deleteTask)
+            {
+                _logger.LogWarning("Failed to delete task {taskId}", taskId);
+                throw new NotFoundException($"Task {taskId} not found.");
+            }
+
+            return deleteTask;
+        }
     }
 }

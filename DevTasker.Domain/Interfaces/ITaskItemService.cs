@@ -16,5 +16,6 @@ namespace DevTasker.Domain.Interface
         Task<TaskItem> GetTaskById(int taskId, bool withDetails = false);
         Task<TaskItem> UpdateTaskStatus(int taskId, TaskItemStatus newStatus);
         Task<TaskItem> UpdateTaskPriority(int taskId, TaskItemPriority newPriority);
+        Task<bool> DeleteTask(int taskId);
     }
 }

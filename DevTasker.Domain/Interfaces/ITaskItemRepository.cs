@@ -14,5 +14,6 @@ namespace DevTasker.Domain.Interface
         Task<IEnumerable<TaskItem>> GetAllTasksForProjectAsync(int projectId, bool withDetails = false);
         Task<IEnumerable<TaskItem>> GetAllTasksAsync(bool withDetails = false);
         Task<TaskItem?> GetTaskByIdAsync(int taskId, bool withDetails = false);
+        Task<bool> DeleteTaskAsync(int taskId);
     }
 }
