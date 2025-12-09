@@ -118,5 +118,17 @@ namespace DevTasker.Api.Controllers
 
             return Ok(res.ToDto());
         }
+
+        // PATCH: api/tasks/{taskId}/priority
+        [HttpPatch("{taskId:int}/priority")]
+        public async Task<ActionResult<TaskItemDto>> UpdateTaskPriority(int taskId, [FromBody] UpdateTaskPriorityRequest request)
+        {
+            Enum.TryParse<TaskItemPriority>(request.priority.ToString(), out var taskPriority);
+            var res = await _service.UpdateTaskPriority(taskId, taskPriority);
+
+            await _hubContext.Clients.All.SendAsync("TaskUpdated", res.ToDto());
+
+            return Ok(res.ToDto());
+        }
     }
 }

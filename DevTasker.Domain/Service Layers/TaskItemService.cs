@@ -103,5 +103,20 @@ namespace DevTasker.Domain.ServiceLayer
 
             return task;
         }
+
+        public async Task<TaskItem> UpdateTaskPriority(int taskId, TaskItemPriority newPriority)
+        {
+            var task = await _taskItemRepository.UpdateTaskPriorityAsync(taskId, newPriority);
+
+            if (task == null)
+            {
+                _logger.LogWarning("Task {taskId} not found when setting priority {newPriority}", taskId, newPriority);
+                throw new NotFoundException($"Task {taskId} not found.");
+            }
+
+            _logger.LogInformation("Changed priority for task {taskId}", task.Id);
+
+            return task;
+        }
     }
 }

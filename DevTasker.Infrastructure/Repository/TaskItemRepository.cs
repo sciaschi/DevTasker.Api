@@ -82,5 +82,20 @@ namespace DevTasker.Infrastructure.Repository
 
             return taskItem;
         }
+
+        public async Task<TaskItem?> UpdateTaskPriorityAsync(int taskId, TaskItemPriority newPriority)
+        {
+            var taskItem = await _db.TaskItems.SingleOrDefaultAsync(x => x.Id == taskId);
+
+            if (taskItem == null)
+                throw new NotFoundException($"Task {taskId} was not found.");
+
+            taskItem.Priority = newPriority;
+
+            _db.TaskItems.Update(taskItem);
+            await _db.SaveChangesAsync();
+
+            return taskItem;
+        }
     }
 }
