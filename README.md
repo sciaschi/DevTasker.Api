@@ -108,7 +108,9 @@ If you’d rather use SQL Server:
 
 ---
 
-### 3. Configure logging (optional, Splunk)
+## Logging & Splunk (optional)
+
+### 3. Configure logging (Serilog + Splunk)
 
 `Program.cs` uses **Serilog** with the Splunk sink:
 
@@ -144,6 +146,89 @@ export Splunk__Token=<your-hec-token>
 ```
 
 If you don’t have Splunk, you can leave these empty—the app will still run and log to console.
+
+---
+
+### 3.1 Setting up Splunk with a HEC token
+
+If you haven’t used **HTTP Event Collector (HEC)** before, here is a minimal setup to get DevTasker logs into Splunk.
+
+#### Step 1 – Enable HEC
+
+1. Log into **Splunk Web** as an admin (e.g. `https://your-splunk-host:8000`).
+2. Go to:  
+   **Settings → Data → Data inputs → HTTP Event Collector**.
+3. Click **Global Settings**:
+   - Set **All tokens** to **Enabled**.
+   - Choose whether to use **SSL** for HEC (default is **enabled** on port `8088`).
+   - Save.
+
+#### Step 2 – Create a HEC token
+
+1. From the same **HTTP Event Collector** page, click **New Token**.
+2. Give it a name, e.g. **DevTasker-HEC**.
+3. Choose the **index** you want logs to go into (for example, `main` or a dedicated index like `devtasker`).
+4. Leave the default sourcetype (or set a custom one if you prefer).
+5. Finish the wizard and copy the generated **Token Value** – this is your `HEC token`.
+
+You now have:
+
+- HEC URL:  
+  - with SSL: `https://your-splunk-host:8088/services/collector/event`  
+  - without SSL: `http://your-splunk-host:8088/services/collector/event`
+- HEC Token: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+- Index: e.g. `devtasker` or `main`
+
+#### Step 3 – Plug HEC into DevTasker
+
+Update your `appsettings.Development.json` (or environment variables) to match:
+
+```jsonc
+{
+  "Splunk": {
+    "Host": "http://your-splunk-host:8088", // or https://... if SSL is enabled
+    "Token": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  }
+}
+```
+
+If you want to change the index from the default `testindex`, update `Program.cs`:
+
+```csharp
+.WriteTo.EventCollector(
+    splunkHost: configuration["Splunk:Host"],
+    eventCollectorToken: configuration["Splunk:Token"],
+    index: "devtasker",                   // <-- your index here
+    uriPath: "services/collector/event")
+```
+
+#### Step 4 – Test HEC manually (optional but recommended)
+
+From a terminal (replace host and token with your values):
+
+```bash
+curl -k   https://your-splunk-host:8088/services/collector   -H "Authorization: Splunk xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"   -d '{"event": "DevTasker HEC test"}'
+```
+
+If everything is configured correctly, Splunk will respond with something like:
+
+```json
+{"text":"Success","code":0}
+```
+
+You’ll then see the event appear in **Search & Reporting** for the chosen index.
+
+#### Step 5 – Run DevTasker and verify logs
+
+1. Start the API (locally or via Docker).
+2. Call a few endpoints (e.g. `GET /api/projects/all`).
+3. In Splunk, search for events:
+
+```spl
+index=devtasker OR index=testindex source="serilog" OR sourcetype="json"
+```
+
+You should see structured JSON logs coming from DevTasker.
 
 ---
 
