@@ -88,6 +88,8 @@ namespace DevTasker.Api.Controllers
         {
             var project = await _service.Archive(id);
 
+            await _hubContext.Clients.All.SendAsync("ProjectUpdated", project.ToDto());
+
             return Ok(project.ToDto()); 
         }
     }
